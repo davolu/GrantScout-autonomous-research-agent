@@ -1,0 +1,34 @@
+name: Daily grant digest
+
+on:
+  schedule:
+    - cron: "0 12 * * *"   # every day at 12:00 UTC
+  workflow_dispatch: {}    # plus a "Run workflow" button for testing
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      # Bring back yesterday's memory so we only email NEW grants.
+      - uses: actions/cache/restore@v4
+        with:
+          path: seen_grants.json
+          key: seen-grants-${{ github.run_id }}
+          restore-keys: seen-grants-
+      - name: Find grants and email ONE digest to yourself
+        env:
+          COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          GMAIL_USER_ID: ${{ secrets.GMAIL_USER_ID }}
+        run: python grant_agent.py
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: seen_grants.json
+          key: seen-grants-${{ github.run_id }}

@@ -1,0 +1,7 @@
+.env
+.venv/
+__pycache__/
+digest.html
+results.json
+run.log
+seen_grants.json

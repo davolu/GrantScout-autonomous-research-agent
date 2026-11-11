@@ -1,0 +1,3 @@
+composio==0.32.0
+composio-typesafe==0.32.0
+typesafe-sdk==0.6.0
