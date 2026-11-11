@@ -1,0 +1,3 @@
+# Run the grant agent every day at 07:00 and send ONE digest email to yourself.
+# Install with:  crontab -e   (then paste the line below, with your own path)
+0 7 * * * cd /home/you/grant_agent && .venv/bin/python grant_agent.py >> run.log 2>&1
